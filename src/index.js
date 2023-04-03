@@ -19,6 +19,17 @@ const customers = [];
 app.post('/account', (req, res) => {
     // get cpf, name from request
     const { cpf, name} = req.body;
+
+    // validate customer already exists
+    const customerAlreadyExists = customers.some(
+        (customer) => customer.cpf === cpf
+    );
+
+    // customer exists: return status error with appropriate error message
+    if (customerAlreadyExists) {
+        return res.status(400).json({ message: 'Customer already exists!'});
+    }
+
     // generate id
     const id = uuidv4();
 
@@ -31,7 +42,7 @@ app.post('/account', (req, res) => {
     });
 
     // return created state with customer id
-    return res.status(201).send({id: id});
+    return res.status(201).json({id: id});
 })
 
 // init listeners app port
